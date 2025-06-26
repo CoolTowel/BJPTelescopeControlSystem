@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8" />
-    <title>Hello World!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Home</title>
 </head>
 <body>
-    <p>Hello World!</p>
+    <h1>欢迎</h1>
+    <form action="/api/auth/register" method="post">
+        <input name="username" placeholder="用户名" />
+        <input name="password" placeholder="密码" type="password" />
+        <button type="submit">注册</button>
+    </form>
+
+    <form action="/api/auth/login" method="post">
+        <input name="username" placeholder="用户名" />
+        <input name="password" placeholder="密码" type="password" />
+        <button type="submit">登录</button>
+    </form>
+
+    <button onclick="fetch('/api/auth/me').then(r=>r.json()).then(console.log)">查看用户</button>
+    <button onclick="fetch('/api/auth/logout', {method:'POST'}).then(()=>alert('已登出'))">登出</button>
 </body>
 </html>

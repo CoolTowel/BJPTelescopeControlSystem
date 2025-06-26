@@ -1,6 +1,6 @@
 using CosineKitty;
 
-namespace WebServer.Astro
+namespace WebServer.Astros
 {
     public class Moon
     {

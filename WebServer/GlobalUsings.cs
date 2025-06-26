@@ -1,1 +1,1 @@
-global using WebServer.Astro;
+global using WebServer.Astros;
