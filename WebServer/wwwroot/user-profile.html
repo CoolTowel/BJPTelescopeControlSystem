@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>修改我的信息</title>
+</head>
+<body>
+    <h1>修改我的信息</h1>
+    <form id="updateForm">
+        <label>
+            邮箱：
+            <input type="email" id="email" />
+        </label><br />
+
+        <label>
+            手机号：
+            <input type="text" id="phone" />
+        </label><br />
+
+        <button type="submit">提交</button>
+    </form>
+
+    <p id="status"></p>
+
+    <script>
+    async function loadUserInfo() {
+      const res = await fetch("/api/user/me");
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById("email").value = data.email || "";
+        document.getElementById("phone").value = data.phoneNumber || "";
+      }
+    }
+
+    document.getElementById("updateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const body = {
+        email: document.getElementById("email").value,
+        phoneNumber: document.getElementById("phone").value
+      };
+      const res = await fetch("/api/user/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      document.getElementById("status").textContent = res.ok ? "✅ 更新成功" : "❌ 更新失败";
+    });
+
+    loadUserInfo();
+    </script>
+</body>
+</html>

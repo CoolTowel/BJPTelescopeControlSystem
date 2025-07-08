@@ -20,5 +20,7 @@
 
     <button onclick="fetch('/api/auth/me').then(r=>r.json()).then(console.log)">查看用户</button>
     <button onclick="fetch('/api/auth/logout', {method:'POST'}).then(()=>alert('已登出'))">登出</button>
+    <br />
+    <a href="/user-profile.html">我的账户</a>
 </body>
 </html>

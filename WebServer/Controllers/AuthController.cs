@@ -1,88 +1,54 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Security.Claims;
-using WebServer.Data;
-using WebServer.Helpers;
-using WebServer.Models;
 
-namespace WebServer.Controllers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
+
+namespace App.Controllers;
+public record RegisterRequest(string Username, string Password, string Email, string? DisplayName);
+public record LoginRequest(string Username, string Password);
+
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly WebServerDbContext _db;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AuthController(WebServerDbContext db)
+    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
-        _db = db;
+        _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromForm] string username, [FromForm] string password)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest req)
     {
-        if (_db.Users.Any(u => u.Username == username))
-            return BadRequest("Username already exists.");
-
-        var salt = PasswordHelper.GenerateSalt();
-        var hash = PasswordHelper.HashPassword(password, salt);
-
-        var user = new User
+        var user = new ApplicationUser
+            {
+            UserName = req.Username,
+            Email = req.Email,
+            DisplayName = req.DisplayName,
+            CreatedAt = DateTime.UtcNow
+        }; 
+        var result = await _userManager.CreateAsync(user, req.Password);
+        if (result.Succeeded)
         {
-            Username = username,
-            PasswordHash = hash,
-            Salt = salt
-        };
-
-        _db.Users.Add(user);
-        _db.SaveChanges();
-        return Ok("Registered.");
+            // 可以在这里添加角色分配等逻辑
+            return Ok("注册成功");
+        }
+        return BadRequest("注册失败: " + string.Join(", ", result.Errors.Select(e => e.Description)));
     }
-
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
+    public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
-        var user = _db.Users.FirstOrDefault(u => u.Username == username);
-        if (user == null) return Unauthorized();
-
-        var inputHash = PasswordHelper.HashPassword(password, user.Salt);
-
-        if (inputHash != user.PasswordHash)
-            return Unauthorized();
-
-        var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-    };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-
-        return Ok("Logged in");
-    }
-
-
-    [HttpGet("me")]
-    public IActionResult Me()
-    {
-        if (!User.Identity?.IsAuthenticated ?? true)
-            return Unauthorized();
-
-        return Ok(new
+        var result = await _signInManager.PasswordSignInAsync(req.Username, req.Password, true, false);
+        if (result.Succeeded)
         {
-            Username = User.Identity.Name,
-            Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-        });
-    }
+            return Ok("登录成功");
+        }
 
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return Ok("Logged out");
+        return Unauthorized("登录失败");
     }
 }

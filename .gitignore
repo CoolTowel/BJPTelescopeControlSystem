@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Database files
+*.db
+*.db-shm
+*.db-wal
+/WebServer/Migrations
+
 # User-specific files
 *.rsuser
 *.suo
@@ -361,3 +367,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/WebServer/WebServer.db
+/WebServer/Data/WebServer.db

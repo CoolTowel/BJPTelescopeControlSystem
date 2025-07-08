@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebServer.Controllers
+namespace App.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
