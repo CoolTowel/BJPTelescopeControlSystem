@@ -1,14 +1,10 @@
-using App.Data;
-using App.Models;
-using Microsoft.AspNetCore.Mvc;
-
 public record TelescopeDTO(
     string Name,
     double Longitude,
     double Latitude,
     string Description);
 
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TelescopesController : ControllerBase
@@ -23,7 +19,7 @@ public class TelescopesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTelescope(int id, [FromBody] TelescopeDTO req)
     {
-        var telescope = await _db.Telescope.FindAsync(id);
+        var telescope = await _db.Telescopes.FindAsync(id);
         if (telescope == null)
             return NotFound("望远镜不存在");
 
@@ -36,5 +32,13 @@ public class TelescopesController : ControllerBase
         await _db.SaveChangesAsync();
 
         return Ok("更新成功");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("GetAllTelescopes")]
+    public async Task<IActionResult> GetAllTelescopes()
+    {
+        var telescopes = await _db.Telescopes.ToListAsync();
+        return Ok(telescopes);
     }
 }

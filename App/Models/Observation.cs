@@ -1,6 +1,6 @@
 namespace App.Models
 {
-    public class Observations
+    public class Observation
     {
 
     }

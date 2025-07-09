@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace App.Controllers;
 public record RegisterRequest(string Username, string Password, string Email, string? DisplayName);
@@ -39,6 +40,18 @@ public class AuthController : ControllerBase
         }
         return BadRequest("注册失败: " + string.Join(", ", result.Errors.Select(e => e.Description)));
     }
+    //[HttpPost("login")]
+    //public async Task<IActionResult> Login([FromBody] LoginRequest req)
+    //{
+    //    var user = await _userManager.FindByNameAsync(req.Username);
+    //    if (user == null || !await _userManager.CheckPasswordAsync(user, req.Password))
+    //        return Unauthorized("用户名或密码错误");
+
+    //    await _signInManager.SignInAsync(user, isPersistent: true);
+
+    //    var roles = await _userManager.GetRolesAsync(user);
+    //    return Ok(new { username = user.UserName, role = roles.FirstOrDefault() ?? "User" });
+    //}
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
@@ -46,7 +59,17 @@ public class AuthController : ControllerBase
         var result = await _signInManager.PasswordSignInAsync(req.Username, req.Password, true, false);
         if (result.Succeeded)
         {
-            return Ok("登录成功");
+            var user = await _userManager.FindByNameAsync(req.Username);
+            var roles = await _userManager.GetRolesAsync(user);
+            var isAdmin = roles.Contains("Admin");
+            if (isAdmin)
+            {
+                Console.WriteLine("是管理员");
+            }
+            
+            //return Ok("登录成功");
+            return Ok(new { username = user.UserName, isAdmin });
+
         }
 
         return Unauthorized("登录失败");

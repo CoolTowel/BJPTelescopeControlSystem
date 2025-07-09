@@ -5,22 +5,56 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>欢迎</h1>
-    <form action="/api/auth/register" method="post">
-        <input name="username" placeholder="用户名" />
-        <input name="password" placeholder="密码" type="password" />
-        <button type="submit">注册</button>
-    </form>
-
-    <form action="/api/auth/login" method="post">
-        <input name="username" placeholder="用户名" />
-        <input name="password" placeholder="密码" type="password" />
+    <h1>欢迎，请登录</h1>
+    <form id="loginForm">
+        <input type="text" name="username" placeholder="用户名" required>
+        <input type="password" name="password" placeholder="密码" required>
         <button type="submit">登录</button>
     </form>
 
     <button onclick="fetch('/api/auth/me').then(r=>r.json()).then(console.log)">查看用户</button>
     <button onclick="fetch('/api/auth/logout', {method:'POST'}).then(()=>alert('已登出'))">登出</button>
     <br />
+    <a href="/register.html">注册</a>
     <a href="/user-profile.html">我的账户</a>
 </body>
 </html>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // 防止表单默认提交
+
+        const form = e.target;
+        const data = {
+            username: form.username.value,
+            password: form.password.value
+        };
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include', // ⚠️ 如果你用 cookie 登录，必须加
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                alert("登录成功，欢迎 " + user.username);
+
+                if (user.isAdmin === true || user.isAdmin === "true")  {
+                    window.location.href = "/admin-dashboard.html";
+                } else {
+                    window.location.href = "/dashboard.html";
+                }
+            } else {
+                const result = await response.json();
+                alert("登录失败：" + result.message || response.statusText);
+            }
+        } catch (err) {
+            console.error("请求失败:", err);
+            alert("无法连接到服务器");
+        }
+    });
+</script>

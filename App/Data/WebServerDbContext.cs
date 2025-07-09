@@ -9,7 +9,7 @@ namespace App.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // 你也可以在这里加上自定义实体表
-        public DbSet<Telescope> Telescope => Set<Telescope>();
+        public DbSet<Telescope> Telescopes => Set<Telescope>();
     }
 
     // 下面是原来的 AppDbContext 类，
@@ -19,7 +19,7 @@ namespace App.Data
     //        : base(options) { }
 
     //    public DbSet<User> Users => Set<User>();
-    //    public DbSet<Telescope> Telescope => Set<Telescope>();
+    //    public DbSet<Telescope> Telescopes => Set<Telescope>();
 
     //}
 }
