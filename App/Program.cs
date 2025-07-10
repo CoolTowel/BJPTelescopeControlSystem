@@ -1,4 +1,6 @@
 // web程序入口
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,7 +19,26 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // 配置身份验证
-builder.Services.AddAuthentication();
+//builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(options =>
+{
+    options.LoginPath = "/login.html";
+    options.Cookie.Name = "auth_cookie";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    //options.ExpireTimeSpan = TimeSpan.FromHours(1);
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "auth_cookie";
+    options.LoginPath = "/login.html";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    //options.ExpireTimeSpan = TimeSpan.FromHours(1);
+});
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();

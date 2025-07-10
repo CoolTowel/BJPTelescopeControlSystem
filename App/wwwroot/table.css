@@ -1,0 +1,60 @@
+/* 表格外层折叠容器 */
+.table-box {
+    border: 1px solid #ccc;
+    margin-bottom: 1em;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* 标题栏 */
+.table-header {
+    background: #eee;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .table-header .arrow {
+        transition: transform 0.3s ease;
+    }
+
+    .table-header.collapsed .arrow {
+        transform: rotate(-90deg);
+    }
+
+/* 表格样式 */
+table.auto-generated {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    table.auto-generated th,
+    table.auto-generated td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+
+        table.auto-generated th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+            table.auto-generated th.sortable::after {
+                content: " ⬍";
+                font-size: 0.8em;
+                opacity: 0.5;
+            }
+
+            table.auto-generated th.sortable.asc::after {
+                content: " ▲";
+                opacity: 1;
+            }
+
+            table.auto-generated th.sortable.desc::after {
+                content: " ▼";
+                opacity: 1;
+            }

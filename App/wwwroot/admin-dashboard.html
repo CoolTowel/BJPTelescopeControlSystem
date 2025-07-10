@@ -4,12 +4,6 @@
     <meta charset="UTF-8" />
     <title>管理员控制台</title>
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-
         th, td {
             border: 1px solid #ccc;
             padding: 8px 12px;
@@ -24,59 +18,13 @@
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="table.css">
 </head>
 <body>
-    <h2>望远镜列表</h2>
-    <table id="telescopeTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>名称</th>
-                <th>经度</th>
-                <th>纬度</th>
-                <th>是否在线</th>
-                <th>最后心跳</th>
-                <th>描述</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
 
-    <script>
-    async function loadTelescopes() {
-      try {
-          const res = await fetch("/api/Telescopes/GetAllTelescopes", {
-          credentials: "include"
-        });
-        if (!res.ok) {
-          alert("加载望远镜列表失败: " + res.status);
-          return;
-        }
+    <!--<h2>望远镜数据</h2>-->
 
-        const data = await res.json();
-        const tbody = document.querySelector("#telescopeTable tbody");
-        tbody.innerHTML = "";
-
-        data.forEach(t => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${t.id}</td>
-            <td>${t.name}</td>
-            <td>${t.longitude}</td>
-            <td>${t.latitude}</td>
-            <td>${t.isOnline ? "✅" : "❌"}</td>
-            <td>${t.lastHeartbeat ? new Date(t.lastHeartbeat).toLocaleString() : "-"}</td>
-            <td>${t.description ?? "-"}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (err) {
-          console.error(err);
-        alert("网络错误: " + err.message);
-      }
-    }
-
-    window.onload = loadTelescopes;
-    </script>
+    <div class="auto-table" data-api="/api/telescopes/getalltelescopes" data-title="全部望远镜"></div>
+    <script src="table.js"></script>
 </body>
 </html>

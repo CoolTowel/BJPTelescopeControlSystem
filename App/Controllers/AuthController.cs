@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -56,22 +58,42 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
-        var result = await _signInManager.PasswordSignInAsync(req.Username, req.Password, true, false);
+        var user = await _userManager.FindByNameAsync(req.Username);
+        if (user == null)
+        {
+            return Unauthorized("用户名或密码错误");
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(req.Username, req.Password, false, false);
         if (result.Succeeded)
         {
-            var user = await _userManager.FindByNameAsync(req.Username);
             var roles = await _userManager.GetRolesAsync(user);
             var isAdmin = roles.Contains("Admin");
             if (isAdmin)
             {
                 Console.WriteLine("是管理员");
             }
-            
+
             //return Ok("登录成功");
             return Ok(new { username = user.UserName, isAdmin });
-
         }
+        else
+        { return Unauthorized("用户名或密码错误"); }
+    }
 
-        return Unauthorized("登录失败");
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Ok();
+    }
+
+    [HttpGet("check-login")]
+    public IActionResult CheckLogin()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+            return Ok(new { user = User.Identity.Name });
+
+        return Unauthorized();
     }
 }

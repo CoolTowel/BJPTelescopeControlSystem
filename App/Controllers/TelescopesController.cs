@@ -16,6 +16,7 @@ public class TelescopesController : ControllerBase
         _db = db;
     }
 
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTelescope(int id, [FromBody] TelescopeDTO req)
     {
@@ -30,7 +31,6 @@ public class TelescopesController : ControllerBase
         telescope.Description = req.Description;
 
         await _db.SaveChangesAsync();
-
         return Ok("更新成功");
     }
 
