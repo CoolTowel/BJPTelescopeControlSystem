@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace App.Models
 {
     public class Telescope
@@ -13,7 +11,7 @@ namespace App.Models
         // 可用 JSON 或 "纬度,经度" 表示位置
         public double Longitude { get; set; }
 
-        public  double Latitude { get; set; }
+        public double Latitude { get; set; }
 
         public bool IsOnline { get; set; } = false;
 

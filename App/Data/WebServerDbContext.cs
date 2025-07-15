@@ -1,6 +1,4 @@
-using App.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Data
 {
@@ -10,6 +8,7 @@ namespace App.Data
 
         // 你也可以在这里加上自定义实体表
         public DbSet<Telescope> Telescopes => Set<Telescope>();
+        public DbSet<ObservationTask> ObservationTasks => Set<ObservationTask>();
     }
 
     // 下面是原来的 AppDbContext 类，

@@ -6,10 +6,18 @@
 </head>
 <body>
     <h2>登录</h2>
-    <input id="username" placeholder="用户名" />
+    <form onsubmit="login(event)">
+        <input type="text" id="username" placeholder="用户名" autocomplete="username" required />
+        <input type="password" id="password" placeholder="密码" autocomplete="current-password" required />
+        <button type="submit">登录</button>
+    </form>
+
+    <!--
+        <input id="username" placeholder="用户名" />
     <input id="password" type="password" placeholder="密码" />
     <button onclick="login()">登录</button>
     <p id="error" style="color:red;"></p>
+        -->
 
     <script src="app.js"></script>
 </body>

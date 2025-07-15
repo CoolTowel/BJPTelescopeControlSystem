@@ -122,6 +122,8 @@ if (app.Environment.IsDevelopment())
 
     // 创建角色（如无）
     await roleManager.CreateAsync(new IdentityRole("Admin"));
+    await roleManager.CreateAsync(new IdentityRole("User"));
+
 
     // 检查管理员是否存在
     var adminUser = await userManager.FindByNameAsync(adminUserName);
@@ -136,22 +138,46 @@ if (app.Environment.IsDevelopment())
     await userManager.AddToRoleAsync(newAdmin, "Admin");
     Console.WriteLine("管理员账户已创建");
 
+    var testUserPassword = "Test123!"; // 测试用户密码
+    var testUser = new ApplicationUser
+    {
+        UserName = "test",
+        Email = "test@test.com",
+        EmailConfirmed = true
+    };
+    await userManager.CreateAsync(testUser, testUserPassword);
+    await userManager.AddToRoleAsync(newAdmin, "User");
+    Console.WriteLine("测试账户已创建");
+
     db.Telescopes.Add(new Telescope
     {
-        Name = "Default Telescope",
-        Latitude = 39.90,
-        Longitude = 116.40,
+        Name = "Dream 16",
+        Latitude = 29.011925,
+        Longitude = 100.227752,
         IsOnline = true,
-        Description = "系统初始化创建的望远镜"
+        Description = "稻城Dream 16英寸牛反，ASI6200MM相机"
+    });
+    db.Telescopes.Add(new Telescope
+    {
+        Name = "EF400 2.8",
+        Latitude = 26.722592,
+        Longitude = 100.029570,
+        IsOnline = true,
+        Description = "丽江EF400，ASI2600MM相机"
     });
     await db.SaveChangesAsync();
-
 }
 
 // 映射默认路由（如 /index.html）
 app.MapFallbackToFile("index.html"); // 映射到 wwwroot/index.html
 
-app.UseHttpsRedirection();
+
+// 只在生产环境启用HTTPS重定向
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 
 app.Run();
 

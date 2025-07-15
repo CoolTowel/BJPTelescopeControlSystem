@@ -1,10 +1,5 @@
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace App.Controllers;
 public record RegisterRequest(string Username, string Password, string Email, string? DisplayName);
@@ -28,16 +23,18 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest req)
     {
         var user = new ApplicationUser
-            {
+        {
             UserName = req.Username,
             Email = req.Email,
             DisplayName = req.DisplayName,
             CreatedAt = DateTime.UtcNow
-        }; 
+        };
         var result = await _userManager.CreateAsync(user, req.Password);
         if (result.Succeeded)
         {
             // 可以在这里添加角色分配等逻辑
+            // add to User role
+            await _userManager.AddToRoleAsync(user, "User");
             return Ok("注册成功");
         }
         return BadRequest("注册失败: " + string.Join(", ", result.Errors.Select(e => e.Description)));
@@ -67,15 +64,8 @@ public class AuthController : ControllerBase
         var result = await _signInManager.PasswordSignInAsync(req.Username, req.Password, false, false);
         if (result.Succeeded)
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var isAdmin = roles.Contains("Admin");
-            if (isAdmin)
-            {
-                Console.WriteLine("是管理员");
-            }
-
             //return Ok("登录成功");
-            return Ok(new { username = user.UserName, isAdmin });
+            return Ok(new { username = user.UserName });
         }
         else
         { return Unauthorized("用户名或密码错误"); }
@@ -92,7 +82,11 @@ public class AuthController : ControllerBase
     public IActionResult CheckLogin()
     {
         if (User.Identity?.IsAuthenticated == true)
-            return Ok(new { user = User.Identity.Name });
+        {
+            var isAdmin = User.IsInRole("Admin");
+
+            return Ok(new { user = User.Identity.Name, isAdmin });
+        }
 
         return Unauthorized();
     }

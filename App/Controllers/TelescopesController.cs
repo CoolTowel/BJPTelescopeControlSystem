@@ -41,4 +41,13 @@ public class TelescopesController : ControllerBase
         var telescopes = await _db.Telescopes.ToListAsync();
         return Ok(telescopes);
     }
+
+    [HttpGet("list")]
+    public async Task<IActionResult> GetTelescopeList()
+    {
+        var telescopes = await _db.Telescopes
+            .Select(t => new { id = t.Id, name = t.Name })
+            .ToListAsync();
+        return Ok(telescopes);
+    }
 }

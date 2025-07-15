@@ -1,9 +1,6 @@
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
-
 namespace App.Models
 {
-    public class ApplicationUser: IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         // 添加你自己的字段，比如：
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

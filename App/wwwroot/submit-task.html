@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>提交观测任务</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+
+        input, select {
+            width: 300px;
+            padding: 6px;
+            margin-top: 4px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>提交观测任务</h1>
+    <div>
+        <button onclick="window.location.href='/'" style="position:absolute;left:24px;top:24px;">返回首页</button>
+    </div>
+    <div style="height: 24px;"></div>
+    <div style="display: flex; flex-direction: row; gap: 24px; flex-wrap: wrap;">
+        <form id="taskForm">
+            <label>
+                目标名称：
+                <input type="text" name="TargetName" required>
+            </label>
+            <label>
+                RA（J2000）(hh:mm:ss)：
+                <input type="text" name="RA" required>
+            </label>
+            <label>
+                Dec（J2000）(dd:mm:ss)：
+                <input type="text" name="Dec" required>
+            </label>
+            <label>
+                使用设备：
+                <select name="Telescope" id="telescopeSelect" required>
+                    <option value="">请选择望远镜</option>
+                </select>
+            </label>
+    </div>
+    <div style="height: 24px;"></div>
+    <div style="display: flex; flex-direction: row; gap: 24px; flex-wrap: wrap;">
+        <!-- L通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">L</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="L-Nums" min="1" required value="10" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="L-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- R通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">R</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="R-Nums" min="1" required value="10" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="R-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- G通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">G</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="G-Nums" min="1" required value="10" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="G-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- B通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">B</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="B-Nums" min="1" required value="10" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="B-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- H通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">H</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="H-Nums" min="1" required value="0" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="H-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- S通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">S</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="S-Nums" min="1" required value="0" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="S-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+        <!-- O通道 -->
+        <div>
+            <div style="font-weight:bold;text-align:center;">O</div>
+            <label style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" name="O-Nums" min="1" required value="0" style="width:60px;">
+                张
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
+                <input type="number" name="O-ExpSecs" min="1" required value="200" style="width:60px;">
+                秒
+            </label>
+        </div>
+    </div>
+
+    <button type="submit">提交任务</button>
+    </form>
+
+    <p id="result" style="margin-top:20px;"></p>
+
+    <script src="app.js"></script>
+    <script src="submit-task.js"></script>
+    <script>
+        // 动态加载望远镜列表
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/api/telescopes/GetAllTelescopes')
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('telescopeSelect');
+                    data.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.id || t.Id || t.ID || t.name; // 兼容不同字段
+                        opt.textContent = t.name;
+                        select.appendChild(opt);
+                    });
+                });
+        });
+    </script>
+
+</body>
+</html>
