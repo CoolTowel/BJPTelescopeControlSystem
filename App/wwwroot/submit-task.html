@@ -60,11 +60,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">L</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="L-Nums" min="1" required value="10" style="width:60px;">
+                <input type="number" name="LNums" min="0" required value="10" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="L-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="LExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -72,11 +72,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">R</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="R-Nums" min="1" required value="10" style="width:60px;">
+                <input type="number" name="RNums" min="0" required value="10" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="R-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="RExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -84,11 +84,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">G</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="G-Nums" min="1" required value="10" style="width:60px;">
+                <input type="number" name="GNums" min="0" required value="10" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="G-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="GExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -96,11 +96,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">B</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="B-Nums" min="1" required value="10" style="width:60px;">
+                <input type="number" name="BNums" min="0" required value="10" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="B-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="BExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -108,11 +108,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">H</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="H-Nums" min="1" required value="0" style="width:60px;">
+                <input type="number" name="HNums" min="0" required value="0" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="H-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="HExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -120,11 +120,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">S</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="S-Nums" min="1" required value="0" style="width:60px;">
+                <input type="number" name="SNums" min="0" required value="0" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="S-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="SExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -132,11 +132,11 @@
         <div>
             <div style="font-weight:bold;text-align:center;">O</div>
             <label style="display: flex; align-items: center; gap: 4px;">
-                <input type="number" name="O-Nums" min="1" required value="0" style="width:60px;">
+                <input type="number" name="ONums" min="0" required value="0" style="width:60px;">
                 张
             </label>
             <label style="display: flex; align-items: center; gap: 4px; margin-top:4px;">
-                <input type="number" name="O-ExpSecs" min="1" required value="200" style="width:60px;">
+                <input type="number" name="OExpSecs" min="0" required value="200" style="width:60px;">
                 秒
             </label>
         </div>
@@ -152,7 +152,7 @@
     <script>
         // 动态加载望远镜列表
         document.addEventListener('DOMContentLoaded', function () {
-            fetch('/api/telescopes/GetAllTelescopes')
+            fetch('/api/telescopes/list')
                 .then(res => res.json())
                 .then(data => {
                     const select = document.getElementById('telescopeSelect');

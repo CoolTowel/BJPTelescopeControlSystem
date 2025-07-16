@@ -21,10 +21,37 @@
     <link rel="stylesheet" href="table.css">
 </head>
 <body>
-
-    <!--<h2>望远镜数据</h2>-->
+    <div id="admin-header">
+        <h2>管理员控制台</h2>
+        <div id="user-info"></div>
+        <button onclick="logout()">登出</button>
+    </div>
 
     <div class="auto-table" data-api="/api/telescopes/getalltelescopes" data-title="全部望远镜"></div>
+    <div class="auto-table" data-api="/api/observations/getallobservationtask" data-title="全部待观测任务"></div>
+    
+    <script src="routes.js"></script>
+    <script src="auth.js"></script>
     <script src="table.js"></script>
+    <script>
+        // 管理员页面特定的初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 检查管理员访问权限
+            const hasAccess = await authManager.checkPageAccess();
+            if (!hasAccess) return;
+
+            // 显示管理员信息
+            const user = authManager.getCurrentUser();
+            const userInfoDiv = document.getElementById('user-info');
+            if (userInfoDiv) {
+                userInfoDiv.innerHTML = `<p>当前管理员：${user}</p>`;
+            }
+        });
+
+        // 登出函数
+        async function logout() {
+            await authManager.logout();
+        }
+    </script>
 </body>
 </html>

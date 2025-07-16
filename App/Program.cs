@@ -6,7 +6,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // 添加 Swagger 生成器服务
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "望远镜控制系统 API",
+        Version = "v1",
+        Description = "望远镜控制系统的API文档"
+    });
+});
 
 // 添加数据库上下文
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -96,7 +104,11 @@ if (app.Environment.IsDevelopment())
 {
     // 启用 Swagger 中间件
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "望远镜控制系统 API v1");
+        c.RoutePrefix = "swagger";
+    });
 
     //删除旧的数据库文件（如果存在）
     if (File.Exists("Data/WebServer.db"))
@@ -173,7 +185,7 @@ app.MapFallbackToFile("index.html"); // 映射到 wwwroot/index.html
 
 
 // 只在生产环境启用HTTPS重定向
-if (!app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
 }

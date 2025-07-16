@@ -17,7 +17,8 @@ document.getElementById('taskForm').addEventListener('submit', async function (e
         resultText.style.color = 'green';
         this.reset();
     } else {
-        resultText.innerText = '任务提交失败。';
+        const msg = await res.text();
+        resultText.innerText = '任务提交失败。'+msg;
         resultText.style.color = 'red';
     }
 });

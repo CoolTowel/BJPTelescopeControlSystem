@@ -23,9 +23,37 @@
     <link rel="stylesheet" href="table.css">
 </head>
 <body>
+    <div id="user-header">
+        <h2>用户控制台</h2>
+        <div id="user-info"></div>
+        <button onclick="logout()">登出</button>
+    </div>
+    
     <a href="/submit-task.html">提交观测任务</a>
+    
+    <script src="routes.js"></script>
+    <script src="auth.js"></script>
     <script src="app.js"></script>
     <script src="dashboard.js"></script>
+    <script>
+        // 用户页面特定的初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 检查页面访问权限
+            const hasAccess = await authManager.checkPageAccess();
+            if (!hasAccess) return;
 
+            // 显示用户信息
+            const user = authManager.getCurrentUser();
+            const userInfoDiv = document.getElementById('user-info');
+            if (userInfoDiv) {
+                userInfoDiv.innerHTML = `<p>当前用户：${user}</p>`;
+            }
+        });
+
+        // 登出函数
+        async function logout() {
+            await authManager.logout();
+        }
+    </script>
 </body>
 </html>
