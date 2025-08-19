@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <ul>
                 <li><button id="dashboard-btn">控制台</button></li>
                 <br>
-                <li><a href="/submit-task.html">提交观测任务</a></li>
+                <li><button onclick="window.location.href='/submit-task.html'">提交观测任务</button></li>
                 <br>
                 <li><button onclick="logout()">登出</button></li>
             </ul>
@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     window.location.href = '/dashboard.html';
                 }
+            };
+            document.getElementById('submit-task-btn').onclick = function() {
+                window.location.href = '/submit-task.html';
             };
         }
     }
